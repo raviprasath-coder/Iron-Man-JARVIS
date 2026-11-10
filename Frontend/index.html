@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. // Stark Industries File Command System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="hud-overlay"></div>
+    <div class="scanlines"></div>
+
+    <!-- MAIN INTERFACE CONTAINER -->
+    <div class="jarvis-app">
+        <!-- TOP HUD BAR -->
+        <header class="hud-header">
+            <div class="hud-brand">
+                <div class="mini-arc"></div>
+                <div class="brand-text">
+                    <span class="stark-title">STARK INDUSTRIES</span>
+                    <span class="system-sub">J.A.R.V.I.S. // FILE INTELLIGENCE SYSTEM v4.2</span>
+                </div>
+            </div>
+
+            <div class="hud-telemetry">
+                <div class="telemetry-item">
+                    <span class="label">VAULT:</span>
+                    <span class="value" id="vaultLocation">READY</span>
+                </div>
+                <div class="telemetry-item">
+                    <span class="label">STATUS:</span>
+                    <span class="value status-online" id="connectionStatus">CORE ONLINE</span>
+                </div>
+                <div class="telemetry-item time-display" id="hudClock">12:00:00</div>
+                <button class="audio-toggle-btn" id="voiceToggleBtn" title="Toggle Voice Audio Output">
+                    <span id="voiceToggleIcon">🔊</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN GRID: DUAL PANE HUD -->
+        <main class="hud-main-grid">
+            <!-- LEFT PANEL: VOICE & COMMAND CONSOLE -->
+            <section class="console-panel">
+                <div class="panel-header">
+                    <div class="corner-accents"></div>
+                    <h2><span class="accent-text">COMMAND</span> CONSOLE</h2>
+                    <span class="panel-indicator" id="stateBadge">IDLE // STANDBY</span>
+                </div>
+
+                <!-- ARC REACTOR VISUALIZER -->
+                <div class="arc-reactor-wrapper">
+                    <div class="arc-reactor" id="arcReactor">
+                        <div class="arc-ring ring-outer"></div>
+                        <div class="arc-ring ring-middle"></div>
+                        <div class="arc-ring ring-inner"></div>
+                        <div class="arc-core">
+                            <button id="micButton" class="mic-btn" title="Click to speak directive">
+                                <span class="mic-icon">🎙️</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="pulse-aura" id="pulseAura"></div>
+                    <p id="status" class="status-caption">Press the Arc Reactor or speak: "Jarvis, list files"</p>
+                </div>
+
+                <!-- QUICK DIRECTIVE CHIPS -->
+                <div class="chips-container">
+                    <button class="chip-btn" data-command="Jarvis, write code for calculator">⚡ Code: Calculator</button>
+                    <button class="chip-btn" data-command="Jarvis, create python code for snake game">🐍 Code: Snake Game</button>
+                    <button class="chip-btn" data-command="Jarvis, generate html for portfolio">🌐 Code: Portfolio</button>
+                    <button class="chip-btn" data-command="Jarvis, write code for fibonacci in python">🔢 Code: Fibonacci</button>
+                    <button class="chip-btn" data-command="Jarvis, list files">📁 List Files</button>
+                    <button class="chip-btn" data-command="Jarvis, storage stats">📊 Storage Stats</button>
+                    <button class="chip-btn" data-command="Jarvis, organize workspace">🧹 Auto Organize</button>
+                    <button class="chip-btn" data-command="Jarvis, read file JARVIS_SYSTEM_LOG.md">📖 Read Log</button>
+                    <button class="chip-btn" data-command="Jarvis, help">⚡ Help</button>
+                    <button class="chip-btn chip-clear" id="clearChatBtn">🗑️ Clear</button>
+                </div>
+
+                <!-- CONVERSATION / DIRECTIVE FEED -->
+                <div class="conversation" id="conversation">
+                    <div class="message jarvis-msg">
+                        <div class="msg-header">
+                            <span class="msg-sender">J.A.R.V.I.S.</span>
+                            <span class="msg-time">SYSTEM BOOT</span>
+                        </div>
+                        <div class="msg-body">
+                            Good day, sir. All file management protocols are active. You can issue directives via voice or text to create, inspect, search, append, or organize files in your vault.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TEXT INPUT BAR -->
+                <form id="commandForm" class="command-bar">
+                    <div class="input-glow-wrapper">
+                        <input 
+                            type="text" 
+                            id="textInput" 
+                            placeholder="Enter directive... (e.g. 'create file test.py with content print(123)')" 
+                            autocomplete="off"
+                        />
+                        <button type="submit" id="sendBtn" class="send-btn">
+                            <span>TRANSMIT</span>
+                            <span class="btn-arrow">▶</span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- RIGHT PANEL: STARK FILE VAULT -->
+            <section class="vault-panel">
+                <div class="panel-header">
+                    <div class="corner-accents"></div>
+                    <h2><span class="accent-text">FILE</span> VAULT</h2>
+                    <button class="refresh-btn" id="refreshVaultBtn" title="Refresh Vault">
+                        <span>SYNC</span> ⟳
+                    </button>
+                </div>
+
+                <!-- VAULT STATS TILES -->
+                <div class="vault-stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-num" id="statFiles">0</span>
+                        <span class="stat-lbl">FILES</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="statDirs">0</span>
+                        <span class="stat-lbl">FOLDERS</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="statSize">0 B</span>
+                        <span class="stat-lbl">VAULT SIZE</span>
+                    </div>
+                </div>
+
+                <!-- VAULT SEARCH -->
+                <div class="vault-search-box">
+                    <input type="text" id="vaultSearchInput" placeholder="Filter files in vault..." />
+                </div>
+
+                <!-- FILE LIST -->
+                <div class="vault-file-list" id="vaultFileList">
+                    <div class="vault-empty">Accessing vault storage...</div>
+                </div>
+
+                <!-- QUICK ACTIONS FOOTER -->
+                <div class="vault-footer">
+                    <button class="footer-btn" id="newFileBtn">+ New File</button>
+                    <button class="footer-btn" id="newFolderBtn">+ New Folder</button>
+                    <button class="footer-btn" id="organizeBtn">Auto Organize</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- FILE VIEWER / EDITOR MODAL -->
+    <div class="modal-backdrop" id="fileModal">
+        <div class="modal-window">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span class="modal-icon">📄</span>
+                    <span id="modalFileName">file.txt</span>
+                    <span class="modal-meta" id="modalFileMeta">0 KB</span>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-action-btn" id="modalSaveBtn">SAVE CHANGES</button>
+                    <button class="modal-action-btn" id="modalDownloadBtn">DOWNLOAD</button>
+                    <button class="modal-close-btn" id="modalCloseBtn">✕</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <textarea id="modalEditor" spellcheck="false" placeholder="File content..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
